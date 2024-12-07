@@ -1,22 +1,19 @@
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.SortedMap;
 
 public class EmployeeBook {
 
+    private int maxEmployeeCount = 0;
     private final Employee[] employees;
-    private final int maxEmployeeCount = 20;
     private int employeeCount = 0;
-    private double minSalary;
-    private double maxSalary;
-    private double midSalary;
-    private int id;
 
-    public EmployeeBook() {
+    public EmployeeBook(int maxEmployeeCount) {
         this.employees = new Employee[maxEmployeeCount];
+        this.maxEmployeeCount = maxEmployeeCount + 1;
     }
 
     //МЕТОДЫ
-
     //Контракт equals и hashCode
     @Override
     public boolean equals(Object o) {
@@ -31,23 +28,14 @@ public class EmployeeBook {
         return Arrays.hashCode(employees);
     }
 
-    //Вывод equal
-    public void printEq(int a, int b) {
-        System.out.println("Equal " + a + " & " + b + ": " + employees[a].equals(employees[b]) + "\n");
-    }
-
-    //Вывод hashCode
-    public void printHash(int a){
-        System.out.println("Hash Code сотрудника " + employees[a].getFcs() + ": " + employees[a].hashCode() + "\n");
-    }
-
     //Добавление нового сотрудника
-    public void newEmployee(String fcs, int department, double salary) {
+    public void addNewEmployee(String fcs, int department, double salary) {
         if (employeeCount >= employees.length) {
             System.out.println("Отдел укомплектован");
+        } else {
+            Employee newEmployee = new Employee(fcs, department, salary);
+            employees[employeeCount++] = newEmployee;
         }
-        Employee newEmployee = new Employee(id, fcs, department, salary);
-        employees[employeeCount++] = newEmployee;
     }
 
     //Увольнение сотрудника
@@ -75,7 +63,11 @@ public class EmployeeBook {
     //Вывод сотрудника по ID
     public void empID(int id) {
         System.out.println();
-        System.out.println("Сотрудник с ID " + id + ": " + employees[id].getFcs() + "\n");
+        if (id < employeeCount) {
+            System.out.println("Сотрудник с ID " + id + ": " + employees[id].getFcs() + "\n");
+        } else {
+            System.out.println("Пользователя с таким ID не существует\n");
+        }
     }
 
     //Вывод сотрудников отдела
@@ -89,7 +81,7 @@ public class EmployeeBook {
     }
 
     //Индексация ЗП
-    public void index(double percent) {
+    public void indexation(double percent) {
         double ind = 1 + percent / 100;
         double salary;
         for (int i = 0; i < employeeCount; i++) {
@@ -100,16 +92,11 @@ public class EmployeeBook {
     }
 
     //Минимальная ЗП
-    public void minSalary(int department) {
+    public void findMinSalaryDepartment(int department) {
         int k = 0;
-
+        double minSalary = employees[0].getSalary();
         for (int i = 0; i < employeeCount; i++) {
-            if (department == employees[i].getDepartment()) {
-                minSalary = employees[i].getSalary();
-            }
-        }
-        for (int i = 0; i < employeeCount; i++) {
-            if (minSalary > employees[i].getSalary() && department == employees[i].getDepartment()) {
+            if (department == employees[i].getDepartment() && minSalary > employees[i].getSalary()) {
                 minSalary = employees[i].getSalary();
                 k = i;
             }
@@ -118,9 +105,9 @@ public class EmployeeBook {
     }
 
     //Максимальная ЗП
-    public void maxSalary(int department) {
+    public void findMaxSalaryDepartment(int department) {
         int k = 0;
-        maxSalary = 0;
+        double maxSalary = 0;
         for (int i = 0; i < employeeCount; i++) {
             if (maxSalary < employees[i].getSalary() && department == employees[i].getDepartment()) {
                 maxSalary = employees[i].getSalary();
@@ -131,7 +118,7 @@ public class EmployeeBook {
     }
 
     //Сумма ЗП
-    public double sumSalary(int department) {
+    public double sumDepartmentSalary(int department) {
         double sum = 0;
         for (int i = 0; i < employeeCount; i++) {
             if (employees[i].getDepartment() == department) {
@@ -142,9 +129,9 @@ public class EmployeeBook {
     }
 
     //Средняя ЗП
-    public void midSalary(int department) {
+    public void midDepartmentSalary(int department) {
         double mid = 0;
-        double sum = sumSalary(department);
+        double sum = sumDepartmentSalary(department);
         int departEmp = 0;
         for (int i = 0; i < employeeCount; i++) {
             if (employees[i].getDepartment() == department) {
@@ -178,10 +165,6 @@ public class EmployeeBook {
 
     //Геттеры и сеттеры
     public int getEmployeeCount() {
-        return this.employeeCount;
-    }
-
-    public int setEmployeeCount(int employeeCount) {
         return this.employeeCount;
     }
 

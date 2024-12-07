@@ -1,20 +1,30 @@
 public class Employee {
 
     private final int department;
-    private final int id;
+    private int id = 0;
+    private static int idCounter = 0;
     private final String fcs;
     private double salary;
 
-    public Employee(int id, String fcs, int department, double salary) {
-        this.id = id;
+    public Employee(String fcs, int department, double salary) {
+        this.id = Employee.generateID();
         this.fcs = fcs;
         this.department = department;
         this.salary = salary;
     }
 
+    //Счетчик ID
+    static int generateID(){
+        return ++idCounter;
+    }
+
     //Геттеры свойств сотрудников
     public String getFcs() {
         return this.fcs;
+    }
+
+    public int getIdCounter(){
+        return idCounter;
     }
 
     public int getDepartment() {
